@@ -1,0 +1,55 @@
+{
+  "name": "polar-cms",
+  "version": "0.1.0",
+  "description": "A simple and post-based Content-Management-System. Built with Node, Handlebars, React, Redux and Bootstrap.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server-build/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel server/ -d server-build/",
+    "watch": "babel server/ -d server-build/ --watch"
+  },
+  "author": "Lukas von Mateffy (@Capevace)",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "eslint": "^3.5.0",
+    "eslint-config-airbnb": "^11.1.0",
+    "eslint-plugin-import": "^1.15.0",
+    "eslint-plugin-jsx-a11y": "^2.2.2",
+    "eslint-plugin-react": "^6.2.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-plumber": "^1.1.0"
+  },
+  "eslintConfig": {
+    "extends": "airbnb",
+    "rules": {
+      "import/imports-first": "off"
+    }
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "better-console": "^0.2.4",
+    "body-parser": "^1.15.2",
+    "colors": "^1.1.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.1",
+    "db-migrate": "^0.10.0-beta.16",
+    "es6-promise": "^3.3.1",
+    "express": "^4.14.0",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.14.1",
+    "hbs": "^4.0.1",
+    "merge": "^1.2.0",
+    "mongoose": "^4.6.1",
+    "morgan": "^1.7.0",
+    "mz": "^2.4.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  }
+}

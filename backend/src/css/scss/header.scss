@@ -1,0 +1,39 @@
+@import "bootstrap/mixins/_background-variant";
+
+@include bg-variant('.bg-primary-faded', transparentize($brand-primary, .4));
+
+.header {
+  position: relative;
+  height: 230px;
+  background-image: url(http://localhost:8080/static/background_blur.jpg); 
+  background-position: 0px 510px;
+  background-size: cover;
+
+  color: white;
+
+  h1 {
+    position: absolute;
+    bottom: 30px;
+  }
+}
+
+.navbar-large {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.navbar {
+  .navbar-collapse {
+    text-align: center;
+  }
+
+  .navbar-nav {
+    display: inline-block;
+    float: none;
+
+    .nav-item {
+      font-size: 1.25rem;
+      margin-right: 30px;
+    }
+  }
+}

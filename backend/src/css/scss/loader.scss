@@ -1,0 +1,38 @@
+$loaderDiameter: 4rem;
+$loaderColor: $brand-primary;
+$loaderColorTransparent: rgba($loaderColor, 0.2);
+$spin-duration: 2s;
+
+.page-loader {
+  display: block;
+  position: relative;
+
+  .spinner-wrapper {
+    display: flex;
+    position: absolute;
+    min-height: 100%;
+    min-width: 100%;
+    align-items: center;
+    z-index: $zindex-loader;
+    background: rgba(255, 255, 255, 0.8);
+
+    .spinner {
+      margin: auto;
+      border-radius: 50%;
+      width: $loaderDiameter;
+      height: $loaderDiameter;
+      border: .25rem solid $loaderColorTransparent;
+      border-top-color: $loaderColor;
+      animation: loaderSpin $spin-duration infinite linear;
+    }
+  }
+}
+
+@keyframes loaderSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
