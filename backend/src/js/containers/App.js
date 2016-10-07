@@ -15,7 +15,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Helmet title="Polar CMS" />
+        <Helmet title={(this.props.pageTitle ? this.props.pageTitle + ' - ' : '') + ' Polar CMS'} />
         <PreLoader>
           <Header />
           {this.props.children}
@@ -26,7 +26,8 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  postTypes: state.postTypes
+  postTypes: state.postTypes,
+  pageTitle: state.page.pageTitle,
 });
 
 const mapDispatchToProps = (dispatch) => ({

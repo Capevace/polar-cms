@@ -4,3 +4,7 @@
 @import "typography";
 @import "header";
 @import "loader";
+
+body {
+  -webkit-font-smoothing: antialiased;
+}

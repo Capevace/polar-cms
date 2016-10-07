@@ -17,10 +17,20 @@ gulp.task('sass:watch', ['sass'], () => {
 });
 
 gulp.task('build-react', (cb) => {
-  exec('npm run build', function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
+  const npm = spawn('npm', ['run', 'build-react']);
+
+  npm.stdout.on('data', (data) => {
+    console.log(`${data.toString()}`);
+  });
+
+  npm.stderr.on('data', (data) => {
+    console.log(`Error: ${data.toString()}`);
+    cb(data.toString());
+  });
+
+  npm.on('close', (code) => {
+    cb(code);
+    console.log(`Npm build exited with code ${code}`);
   });
 });
 

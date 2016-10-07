@@ -1,14 +1,17 @@
 import url from 'url';
 import axios from 'axios';
 
-export const apiUrl = 'http://localhost:8080/api/';
+
+export const apiURLOld = 'http://localhost:8080/api/';
+export const apiUrl = (apiPath) => url.resolve(apiURLOld, apiPath);
+
 
 function fetchHasThrown() {
 
 }
 
 export function fetchPostTypes() {
-  const requestUrl = url.resolve(apiUrl, 'posts/post-types');
+  const requestUrl = url.resolve(apiURLOld, 'posts/post-types');
 
   return new Promise((resolve, reject) => {
     fetch(requestUrl)
@@ -19,7 +22,7 @@ export function fetchPostTypes() {
 }
 
 export function fetchPosts(postType) {
-  const requestUrl = url.resolve(apiUrl, `posts/${postType}`);
+  const requestUrl = url.resolve(apiURLOld, `posts/${postType}`);
 
   return new Promise((resolve, reject) => {
     fetch(requestUrl)
@@ -30,7 +33,7 @@ export function fetchPosts(postType) {
 }
 
 export function createNewPost(post, postType) {
-  const requestUrl = url.resolve(apiUrl, `posts/${postType}`);
+  const requestUrl = url.resolve(apiURLOld, `posts/${postType}`);
   console.info('POST:', post);
   return new Promise((resolve, reject) => {
     axios.post(requestUrl, {

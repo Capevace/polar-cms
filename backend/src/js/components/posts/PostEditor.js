@@ -5,6 +5,8 @@ import { Row, Col } from '../general/Grid';
 
 function slugify(text)
 {
+  if (!text) return '';
+
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')           // Replace spaces with -
     .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
@@ -13,21 +15,23 @@ function slugify(text)
     .replace(/-+$/, '');            // Trim - from end of text
 }
 
+
+
 class PostEditor extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      post: {
-        ...{
-          title: '',
-          slug: '',
-          postType: props.postType.slug,
-          content: ['']
-        },
-        ...props.post
-      }
+      post: props.post
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.post !== this.state.post) {
+      this.setState({
+        post: newProps.post,
+      });
+    }
   }
 
   handleTitleChange(e) {
@@ -50,74 +54,90 @@ class PostEditor extends React.Component {
     });
   }
 
+  submitAction() {
+    let post = this.state.post;
+    post.slug = slugify(post.title);
+    alert(post);
+    if (this.props.onSubmit) {
+      this.props.onSubmit(post);
+    }
+  }
+
   render() {
     const postTypeName = this.props.postType.name;
     return (
       <div>
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          if (this.props.onSubmit) {
-            this.props.onSubmit(this.state.post);
-          }
-        }}>
-          <Row>
-            <Col width="sm-8">
-              <div className="card">
-                <div className="card-block">
-                  <div className="form-group">
-                    <label htmlFor="title">{postTypeName} Title</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="title"
-                      aria-describedby="titleHelp"
-                      placeholder={`Enter ${postTypeName} Title`}
-                      value={this.state.post.title}
-                      onChange={this.handleTitleChange.bind(this)}
-                    />
-                    <small id="titleHelp" className="form-text text-muted">The Title your {postTypeName} will named by.</small>
-                  </div>
+        {
+          this.state.post &&
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            this.submitAction();
+          }}>
+            <Row>
+              <Col width="sm-8">
+                <div className="card">
+                  <div className="card-block">
+                    <div className="form-group">
+                      <label htmlFor="title">{postTypeName} Title</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="title"
+                        aria-describedby="titleHelp"
+                        placeholder={`Enter ${postTypeName} Title`}
+                        value={this.state.post.title}
+                        onChange={this.handleTitleChange.bind(this)}
+                      />
+                      <small id="titleHelp" className="form-text text-muted">The Title your {postTypeName} will named by.</small>
+                    </div>
 
-                  <div className="form-group">
-                    <label htmlFor="content">{postTypeName} Content</label>
-                    <textarea
-                      className="form-control"
-                      id="content"
-                      rows="3"
-                      aria-describedby="contentHelp"
-                      placeholder="Enter your content"
-                      value={this.state.post.content[0]}
-                      onChange={this.handleContentChange.bind(this)}></textarea>
-                    <small id="contentHelp" className="form-text text-muted">The content of your {postTypeName}.</small>
-                  </div>
+                    <div className="form-group">
+                      <label htmlFor="content">{postTypeName} Content</label>
+                      <textarea
+                        className="form-control"
+                        id="content"
+                        rows="3"
+                        aria-describedby="contentHelp"
+                        placeholder="Enter your content"
+                        value={this.state.post.content[0] ? this.state.post.content[0] : ''}
+                        onChange={this.handleContentChange.bind(this)}></textarea>
+                      <small id="contentHelp" className="form-text text-muted">The content of your {postTypeName}.</small>
+                    </div>
 
-                  <div className="form-group">
-                    <label htmlFor="tags">{postTypeName} Title</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="tags"
-                      aria-describedby="tagsHelp"
-                      placeholder={`Enter your tags`}
-                    />
-                    <small id="tagsHelp" className="form-text text-muted">
-                      The tags your {postTypeName} will be tagged with. These are separated by commas.
-                    </small>
+                    <div className="form-group">
+                      <label htmlFor="tags">{postTypeName} Title</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="tags"
+                        aria-describedby="tagsHelp"
+                        placeholder={`Enter your tags`}
+                      />
+                      <small id="tagsHelp" className="form-text text-muted">
+                        The tags your {postTypeName} will be tagged with. These are separated by commas.
+                      </small>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Col>
+              </Col>
 
-            <Col width="sm-4">
-              <div className="card">
-                <div className="card-block">
-                  <p className="card-text">Published:</p>
-                  <button type="submit" className="btn btn-primary">Create new {postTypeName}</button>
+              <Col width="sm-4">
+                <div className="card">
+                  <div className="card-block">
+                    <p className="card-text">Published:</p>
+                    <button type="submit" className="btn btn-primary">
+                      {
+                        this.props.mode === 'create'
+                          ? `Create new ${postTypeName}`
+                          : `Save ${postTypeName}`
+                      }
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </Col>
-          </Row>
-        </form>
+              </Col>
+            </Row>
+          </form>
+        }
       </div>
     );
   }
