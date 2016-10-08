@@ -30,7 +30,7 @@ class PostEditPage extends React.Component {
     if (this.props.mode === 'create') {
       this.props.createPost(this.props.postType.slug, editedPost);
     } else {
-
+      this.props.savePost(this.props.postType.slug, editedPost);
     }
   }
 
@@ -78,6 +78,11 @@ const mapDispatchToProps = (dispatch) => {
     createPost: (postType, post) => {
       dispatch(
         actions.createPost(postType, post)
+      );
+    },
+    savePost: (postType, post) => {
+      dispatch(
+        actions.savePost(postType, post)
       );
     }
   };

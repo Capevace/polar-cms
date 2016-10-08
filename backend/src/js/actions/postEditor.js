@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { apiUrl } from '../api';
+import { invalidatePosts } from './postList';
 
 export const SETUP_POST_CREATE = 'SETUP_POST_CREATE';
 
@@ -84,6 +85,8 @@ export function createPost(postTypeSlug, post) {
         dispatch({
           type: CREATE_POST_SUCCESS,
         });
+
+        // dispatch(invalidatePosts());
       })
       .catch((error) => {
         console.error('Error fetching posts:', error);
@@ -99,3 +102,32 @@ export function createPost(postTypeSlug, post) {
 export const UPDATE_POST = 'UPDATE_POST';
 export const UPDATE_POST_SUCCESS = 'UPDATE_POST_SUCCESS';
 export const UPDATE_POST_ERROR = 'UPDATE_POST_ERROR';
+
+export function savePost(postTypeSlug, post) {
+  return (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_POST,
+      postType: postTypeSlug,
+    });
+    console.log(post);
+    axios
+      .put(apiUrl(`posts/${postTypeSlug}/${post.slug}`), {
+        post: post
+      })
+      .then((response) => {
+        dispatch({
+          type: UPDATE_POST_SUCCESS,
+          post
+        });
+        // dispatch(invalidatePosts());
+      })
+      .catch((error) => {
+        console.error('Error fetching posts:', error);
+
+        dispatch({
+          type: UPDATE_POST_ERROR,
+          post
+        });
+      });
+  };
+}

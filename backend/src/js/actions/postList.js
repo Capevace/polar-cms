@@ -7,7 +7,7 @@ export const FETCH_POSTS_ERROR = 'FETCH_POSTS_ERROR';
 export const INVALIDATE_POSTS = 'INVALIDATE_POSTS';
 
 function refetchNeeded(postType, state) {
-  return postType !== state.postList.postType;
+  return postType !== state.postList.postType || state.postList.invalidated;
 }
 
 export function fetchPostsIfNeeded(postType, page = 0, forceRefetch = false) {
@@ -17,8 +17,6 @@ export function fetchPostsIfNeeded(postType, page = 0, forceRefetch = false) {
     if (!refetchNeeded(postType, currentState) && !forceRefetch) {
       return false;
     }
-
-    console.info('Something');
 
     dispatch({
       type: FETCH_POSTS,

@@ -57,7 +57,7 @@ class PostEditor extends React.Component {
   submitAction() {
     let post = this.state.post;
     post.slug = slugify(post.title);
-    alert(post);
+
     if (this.props.onSubmit) {
       this.props.onSubmit(post);
     }

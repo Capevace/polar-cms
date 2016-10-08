@@ -38,6 +38,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'hbs');
 app.set('views', [config.server.internalViews, config.theme.themeViewFolder]);
 
+app.use(cors());
 app.use(session({ secret: 'ilovetits' }));
 app.use(passport.initialize());
 app.use(passport.session());

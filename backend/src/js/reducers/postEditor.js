@@ -6,7 +6,11 @@ import {
 
   CREATE_POST,
   CREATE_POST_SUCCESS,
-  CREATE_POST_ERROR
+  CREATE_POST_ERROR,
+
+  UPDATE_POST,
+  UPDATE_POST_SUCCESS,
+  UPDATE_POST_ERROR
 } from '../actions/postEditor';
 
 const defaultPost = {
@@ -44,7 +48,7 @@ function postEditor(state = initialState, action) {
         ...state,
         mode: 'edit',
         postType: action.postType,
-        post: null,
+        post: defaultPost,
         isNewPost: false,
         loading: state.loading + 1,
         invalidated: false
@@ -60,7 +64,7 @@ function postEditor(state = initialState, action) {
     case SETUP_POST_EDIT_ERROR:
       return {
         ...state,
-        post: null,
+        post: defaultPost,
         isNewPost: false,
         loading: 0,
         invalidated: true,
@@ -79,6 +83,25 @@ function postEditor(state = initialState, action) {
       };
 
     case CREATE_POST_ERROR:
+      return {
+        ...state,
+        loading: state.loading - 1,
+      };
+
+    case UPDATE_POST:
+      return {
+        ...state,
+        loading: state.loading + 1,
+      };
+
+    case UPDATE_POST_SUCCESS:
+      return {
+        ...state,
+        loading: state.loading - 1,
+        post: action.post,
+      };
+
+    case UPDATE_POST_ERROR:
       return {
         ...state,
         loading: state.loading - 1,
