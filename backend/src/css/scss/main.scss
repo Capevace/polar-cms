@@ -1,9 +1,12 @@
 @import 'https://fonts.googleapis.com/css?family=Lato';
 @import "variables";
 @import "bootstrap/bootstrap";
+@import "react-animations";
 @import "typography";
 @import "header";
 @import "loader";
+@import "media";
+@import "alerts";
 
 body {
   -webkit-font-smoothing: antialiased;

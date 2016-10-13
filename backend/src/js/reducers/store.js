@@ -1,20 +1,27 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunk from 'redux-thunk';
+
 import preloading from './preloading';
-import postTypes from './postTypes';
-import posts from './posts';
 import page from './page';
+import alertList from './alertList';
+
+// Posts
+import postTypes from './postTypes';
 import postList from './postList';
 import postEditor from './postEditor';
+
+// Media
+import mediaList from './mediaList';
 
 export default createStore(
   combineReducers({
     preloading,
-    postTypes,
-    posts,
     page,
+    alertList,
+    postTypes,
     postList,
     postEditor,
+    mediaList,
   }),
   compose(
     applyMiddleware(thunk),

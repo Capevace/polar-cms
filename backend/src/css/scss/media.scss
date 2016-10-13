@@ -1,0 +1,19 @@
+.media-item {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 100%;
+
+  .media-thumbnail {
+    position: absolute;
+    top: -20%;
+  }
+
+  .media-edit-label {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    background: transparentize($brand-primary, 0.6);
+  }
+}

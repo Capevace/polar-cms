@@ -10,7 +10,7 @@ import {
 
   UPDATE_POST,
   UPDATE_POST_SUCCESS,
-  UPDATE_POST_ERROR
+  UPDATE_POST_ERROR,
 } from '../actions/postEditor';
 
 const defaultPost = {
@@ -18,6 +18,7 @@ const defaultPost = {
   postType: '',
   title: '',
   content: [],
+  meta: {},
 };
 
 const initialState = {
@@ -51,7 +52,7 @@ function postEditor(state = initialState, action) {
         post: defaultPost,
         isNewPost: false,
         loading: state.loading + 1,
-        invalidated: false
+        invalidated: false,
       };
 
     case SETUP_POST_EDIT_SUCCESS:
@@ -105,6 +106,10 @@ function postEditor(state = initialState, action) {
       return {
         ...state,
         loading: state.loading - 1,
+        post: {
+          ...action.post,
+          _id: action.id,
+        },
       };
 
     default:

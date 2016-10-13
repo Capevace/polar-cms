@@ -22,13 +22,13 @@
     "cross-spawn": "4.0.0",
     "css-loader": "0.24.0",
     "detect-port": "1.0.0",
-    "eslint": "^3.5.0",
-    "eslint-config-airbnb": "^11.1.0",
+    "eslint": "^3.7.1",
+    "eslint-config-airbnb": "^11.2.0",
     "eslint-loader": "1.5.0",
     "eslint-plugin-flowtype": "2.11.4",
-    "eslint-plugin-import": "^1.15.0",
-    "eslint-plugin-jsx-a11y": "^2.2.2",
-    "eslint-plugin-react": "^6.2.2",
+    "eslint-plugin-import": "^1.16.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.9.0",
     "filesize": "3.3.0",
@@ -63,8 +63,12 @@
   },
   "dependencies": {
     "axios": "^0.14.0",
+    "flatmap": "0.0.3",
     "jquery": "^3.1.1",
+    "loglevel": "^1.4.1",
+    "loglevel-message-prefix": "^2.0.1",
     "react": "^15.3.1",
+    "react-addons-css-transition-group": "^15.3.2",
     "react-binding": "^0.7.5",
     "react-dom": "^15.3.1",
     "react-helmet": "^3.1.0",
@@ -72,8 +76,7 @@
     "react-router": "^2.8.1",
     "react-side-effect": "^1.0.2",
     "redux": "^3.6.0",
-    "redux-thunk": "^2.1.0",
-    "semantic-ui": "^2.2.4"
+    "redux-thunk": "^2.1.0"
   },
   "scripts": {
     "start": "node scripts/start.js",
@@ -83,7 +86,15 @@
     "test-once": "jest --env=jsdom"
   },
   "eslintConfig": {
-    "extends": "./config/eslint.js"
+    "extends": "airbnb",
+    "rules": {
+      "no-underscore-dangle": "off",
+      "forbid-prop-types": "off",
+      "react/forbid-prop-types": "off"
+    },
+    "env": {
+      "browser": true
+    }
   },
   "jest": {
     "moduleFileExtensions": [

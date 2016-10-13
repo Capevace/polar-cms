@@ -5,7 +5,7 @@ function postTypes(state = {}, action) {
     case 'SET_POST_TYPES':
       return {
         ...state,
-        ...action.postTypes
+        ...action.postTypes,
       };
     default:
       return state;

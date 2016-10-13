@@ -1,173 +1,165 @@
 import express from 'express';
-import { apiAuth, handleMongoError } from '../../services/helpers';
+import { apiAuth, sendMongoError, sendError, sendJSON } from '../../services/helpers';
 import Post from '../../models/post';
 import console from 'better-console';
 import postTypes from '../../services/post-types';
 
 const router = express.Router();
 
+function getPostTypeName(postType) {
+  if (postTypes[postType]) {
+    return postTypes[postType].name;
+  }
+
+  return 'Post';
+}
+
 router.use(apiAuth);
 
-router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-
+// GET: All POST-TYPES [array: returns an array instead of a keyed object]
 router.get('/post-types', (req, res) => {
+  let requestedPostTypes = postTypes;
+
   if (req.query.array) {
-    res.json(Object.keys(postTypes).map(key => postTypes[key]));
-  } else {
-    res.json(postTypes);
+    requestedPostTypes = Object.keys(postTypes).map(key => postTypes[key]);
   }
+
+  sendJSON({
+    postTypes: requestedPostTypes,
+  }, res);
 });
 
+// GET: POST-TYPE with slug
 router.get('/post-types/:slug', (req, res) => {
   const type = postTypes[req.params.slug];
 
   if (type) {
-    res.json(type);
+    sendJSON({
+      postType: type,
+    }, res);
   } else {
-    res.status(404);
-    res.json({
-      status: 404,
-      message: 'Type not found.',
-    });
-    res.end();
+    sendError(404, 'The requested post type was not found.', res);
   }
 });
 
+
+// GET: All POSTS with post type
 router.get('/:postType', (req, res) => {
   Post.find({ postType: req.params.postType }, (err, posts) => {
     if (err) {
-      handleMongoError(err, res);
+      sendMongoError(err, res);
       return;
     }
 
-    res.json(posts);
+    sendJSON({
+      posts,
+    }, res);
   });
 });
 
-router.get('/:postType/:slug', (req, res) => {
+// GET: POST with id
+router.get('/:postType/:id', (req, res) => {
   Post.findOne({
     postType: req.params.postType,
-    slug: req.params.slug,
+    _id: req.params.id,
   }, (err, post) => {
     if (err) {
-      handleMongoError(err, res);
+      sendMongoError(err, res);
       return;
     }
 
     if (post) {
-      res.json(post);
-      res.end();
+      sendJSON({
+        post,
+      }, res);
     } else {
-      res.status(404);
-      res.json({
-        status: 404,
-        message: 'Post not found',
-      });
-      res.end();
+      sendError(404, 'The requested post was not found.', res);
     }
   });
 });
 
+// POST: Create new POST with post type
 router.post('/:postType', (req, res) => {
   const reqPost = req.body.post;
 
   if (!reqPost) {
-    res.status(400);
-    res.json({
-      status: 400,
-      message: 'No post object provided in request.',
-    });
-    res.end();
+    sendError(400, 'No post object was provided in the request.', res);
     return;
   }
 
+  // Make sure the postType is properly set, according to the route
   reqPost.postType = req.params.postType;
 
   const newPost = new Post(reqPost);
-
   newPost.save((err, post) => {
     if (err) {
-      handleMongoError(err, res);
+      sendMongoError(err, res);
       return;
     }
 
-    res.status(200);
-    res.json({
-      status: 200,
+    sendJSON({
       message: 'The post was successfully created.',
-      id: post._id,
-    });
+      id: post._id, // eslint-disable-line
+    }, res);
   });
 });
 
-router.put('/:postType/:slug', (req, res) => {
+// PUT: Update POST with post type and id
+router.put('/:postType/:id', (req, res) => {
   const reqPost = req.body.post;
 
   if (!reqPost) {
-    res.status(400);
-    res.json({
-      status: 400,
-      message: 'No post object provided in request.',
-    });
-    res.end();
+    sendError(400, 'No post object provided in request.', res);
     return;
   }
 
-  Post.findOneAndUpdate({
-    postType: req.params.postType,
-    slug: req.params.slug,
-  }, {
-    $set: req.body.post,
-  },
-    {},
-    (err, post) => {
-      if (err) {
-        handleMongoError(err, res);
-        return;
+  // Find post with slug,
+  //  -> if it already exists we return an error message
+  //  -> otherwise we continue with updating it
+  Post.findOne(
+    {
+      slug: reqPost.slug,
+      _id: { $ne: reqPost._id }, // eslint-disable-line no-underscore-dangle
+    },
+    (existsFindError, post) => {
+      if (post || existsFindError) {
+        sendError(409, 'A Post with that slug already exists.', res);
+      } else {
+        Post.findOneAndUpdate(
+          { _id: req.params.id },
+          reqPost,
+          { runValidators: true }, // Run validators to make sure the input is validated
+          (updateError, updatedPost) => {
+            if (updateError) {
+              sendMongoError(updateError, res);
+            } else {
+              sendJSON({
+                message: `The ${getPostTypeName(updatedPost.postType)} was updated successfully`,
+              }, res);
+            }
+          }
+        );
       }
-
-      res.send(post);
     });
 });
 
-router.delete('/:postType/:slug', (req, res) => {
-  Post
-      .findOne({
-        postType: req.params.postType,
-        slug: req.params.slug,
-      })
-      .remove((err, result) => {
-        if (err) {
-          res.status(500);
-          res.json({
-            status: 500,
-            message: 'Unknown error removing post. See logs for full error.',
-          });
-          res.end();
-          console.error(err);
-          return;
-        }
+// DELETE: POST with post type and id
+router.delete('/:postType/:id', (req, res) => {
+  Post.findOne({ postType: req.params.postType, _id: req.params.id })
+    .remove((err, result) => {
+      if (err) {
+        sendMongoError(err, res);
+        return;
+      }
 
-        if (result.result.n > 0) { // n > 0 => number of removed posts > 0
-          res.status(200);
-          res.json({
-            status: 200,
-            message: 'Post was successfully removed.',
-          });
-          res.end();
-        } else {
-          res.status(404);
-          res.json({
-            status: 404,
-            message: 'Post was not found.',
-          });
-          res.end();
-        }
-      });
+      if (result.result.n > 0) { // n > 0 => number of removed posts > 0
+        sendJSON({
+          message: `The ${getPostTypeName(req.params.postType)} was removed.`,
+        }, res);
+      } else {
+        sendError(404, `The requested ${getPostTypeName(req.params.postType)} was not found.`, res);
+      }
+    });
 });
 
 export default router;

@@ -1,10 +1,12 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { fetchPostTypes } from '../actions/postTypes';
-
+import React, { PropTypes } from 'react';
 import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
+
+import * as actions from '../actions/postTypes';
+
 import PreLoader from './PreLoader';
 import Header from './Header';
+import AlertContainer from './AlertContainer';
 
 
 class App extends React.Component {
@@ -15,27 +17,36 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Helmet title={(this.props.pageTitle ? this.props.pageTitle + ' - ' : '') + ' Polar CMS'} />
+        <Helmet title={`${this.props.pageTitle ? `${this.props.pageTitle} - ` : ''} Polar CMS`} />
         <PreLoader>
           <Header />
           {this.props.children}
         </PreLoader>
+        <AlertContainer />
       </div>
-    )
+    );
   }
 }
 
-const mapStateToProps = (state) => ({
+App.propTypes = {
+  postTypes: PropTypes.object,
+  pageTitle: PropTypes.string,
+  children: PropTypes.any,
+
+  fetchPostTypesIfNeeded: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
   postTypes: state.postTypes,
   pageTitle: state.page.pageTitle,
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   fetchPostTypesIfNeeded: (postTypes) => {
     if (Object.keys(postTypes).length === 0) {
-      dispatch(fetchPostTypes());
+      dispatch(actions.fetchPostTypes());
     }
-  }
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

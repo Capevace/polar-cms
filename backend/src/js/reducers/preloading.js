@@ -3,7 +3,7 @@ function preloading(state = 0, action) {
     case 'START_LOADING_REQUIRED':
       return state + 1;
     case 'FAIL_LOADING_REQUIRED':
-        return state - 1000;
+      return state - 1000;
     case 'STOP_LOADING_REQUIRED':
       return state - 1;
     default:

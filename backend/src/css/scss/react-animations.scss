@@ -1,0 +1,35 @@
+.react-fade-appear {
+  opacity: 0.01;
+  transform: translateX(1000px);
+}
+
+.react-fade-appear.react-fade-appear-active {
+  opacity: 1;
+  transform: translateX(0);
+
+  transition: opacity 100ms ease, transform 300ms ease;
+}
+
+.react-fade-enter {
+  opacity: 0.01;
+  transform: translateX(1000px);
+}
+
+.react-fade-enter.react-fade-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+
+  transition: opacity 400ms ease, transform 300ms ease;
+}
+
+.react-fade-leave {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.react-fade-leave.react-fade-leave-active {
+  opacity: 0;
+  transform: translateX(1000px);
+
+  transition: opacity 200ms ease, transform 500ms ease;
+}

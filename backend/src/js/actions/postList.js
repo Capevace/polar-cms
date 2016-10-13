@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiUrl } from '../api';
+import { buildApiUrl } from '../helpers';
 
 export const FETCH_POSTS = 'FETCH_POSTS';
 export const FETCH_POSTS_SUCCESS = 'FETCH_POSTS_SUCCESS';
@@ -21,23 +21,18 @@ export function fetchPostsIfNeeded(postType, page = 0, forceRefetch = false) {
     dispatch({
       type: FETCH_POSTS,
       postType,
-      page
+      page,
     });
 
-    // alert('ATTENTION: You need to change the API server, to support "response.posts"!!');
-
     axios
-      .get(apiUrl(`posts/${postType}`))
+      .get(buildApiUrl(`posts/${postType}`))
       .then((response) => {
-        console.info(response);
         dispatch({
           type: FETCH_POSTS_SUCCESS,
-          posts: response.data,
+          posts: response.data.posts,
         });
       })
-      .catch((error) => {
-        console.error('Error fetching posts:', error);
-
+      .catch(() => {
         dispatch({
           type: FETCH_POSTS_ERROR,
         });
@@ -47,6 +42,6 @@ export function fetchPostsIfNeeded(postType, page = 0, forceRefetch = false) {
 
 export function invalidatePosts() {
   return {
-    type: INVALIDATE_POSTS
+    type: INVALIDATE_POSTS,
   };
 }

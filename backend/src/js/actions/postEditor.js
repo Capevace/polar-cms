@@ -1,6 +1,8 @@
 import axios from 'axios';
-import { apiUrl } from '../api';
+
+import { buildApiUrl, parseError, logError } from '../helpers';
 import { invalidatePosts } from './postList';
+import { dispatchNewAlert } from './alertList';
 
 export const SETUP_POST_CREATE = 'SETUP_POST_CREATE';
 
@@ -11,12 +13,12 @@ export function prepareCreateIfNeeded(postTypeSlug, mode, force) {
       editorState.postType === postTypeSlug
       && editorState.mode === mode
       && !force) {
-      return null;
+      return;
     }
 
     dispatch({
       type: SETUP_POST_CREATE,
-      postType: postTypeSlug
+      postType: postTypeSlug,
     });
   };
 }
@@ -26,18 +28,19 @@ export const SETUP_POST_EDIT = 'SETUP_POST_EDIT';
 export const SETUP_POST_EDIT_SUCCESS = 'SETUP_POST_EDIT_SUCCESS';
 export const SETUP_POST_EDIT_ERROR = 'SETUP_POST_EDIT_ERROR';
 
-export function prepareEditIfNeeded(postTypeSlug, postSlug, mode, force) {
+export function prepareEditIfNeeded(postTypeSlug, postId, mode, force) {
   return (dispatch, getState) => {
     const editorState = getState().postEditor;
 
     if (
-      editorState.postType === postTypeSlug
-      && editorState.post.slug === postSlug
+      (editorState.postType === postTypeSlug
+      && editorState.post._id === postId
       && editorState.mode === mode
       && !editorState.invalidated
-      && !force
+      && !force)
+      || editorState.loading
     ) {
-      return null;
+      return;
     }
 
     dispatch({
@@ -46,18 +49,14 @@ export function prepareEditIfNeeded(postTypeSlug, postSlug, mode, force) {
     });
 
     axios
-      .get(apiUrl(`posts/${postTypeSlug}/${postSlug}`))
+      .get(buildApiUrl(`posts/${postTypeSlug}/${postId}`))
       .then((response) => {
-        console.info('Fetched post for edit:', response.data);
-
         dispatch({
           type: SETUP_POST_EDIT_SUCCESS,
-          post: response.data,
+          post: response.data.post,
         });
       })
-      .catch((error) => {
-        console.error('Error fetching posts:', error);
-
+      .catch(() => {
         dispatch({
           type: SETUP_POST_EDIT_ERROR,
         });
@@ -78,18 +77,24 @@ export function createPost(postTypeSlug, post) {
     });
 
     axios
-      .post(apiUrl(`posts/${postTypeSlug}`), {
-        post
+      .post(buildApiUrl(`posts/${postTypeSlug}`), {
+        post,
       })
-      .then((response) => {
+      .then(() => {
         dispatch({
           type: CREATE_POST_SUCCESS,
         });
 
-        // dispatch(invalidatePosts());
+        dispatch(invalidatePosts());
+
+        dispatchNewAlert({
+          alertType: 'success',
+          message: `The ${getState().postTypes[postTypeSlug].name} was successfully created.`,
+        });
       })
       .catch((error) => {
-        console.error('Error fetching posts:', error);
+        dispatchNewAlert(parseError(error.response));
+        logError('Error during createPost', error, error.response);
 
         dispatch({
           type: CREATE_POST_ERROR,
@@ -109,24 +114,32 @@ export function savePost(postTypeSlug, post) {
       type: UPDATE_POST,
       postType: postTypeSlug,
     });
-    console.log(post);
+
     axios
-      .put(apiUrl(`posts/${postTypeSlug}/${post.slug}`), {
-        post: post
+      .put(buildApiUrl(`posts/${postTypeSlug}/${post._id}`), {
+        post,
       })
-      .then((response) => {
+      .then(() => {
         dispatch({
           type: UPDATE_POST_SUCCESS,
-          post
+          post,
         });
-        // dispatch(invalidatePosts());
+
+        dispatch(invalidatePosts());
+
+        dispatchNewAlert({
+          alertType: 'success',
+          message: `The ${getState().postTypes[postTypeSlug].name} was successfully saved.`,
+        });
       })
       .catch((error) => {
-        console.error('Error fetching posts:', error);
+        dispatchNewAlert(parseError(error.response));
+        logError('Error during savePost', error, error.response);
 
         dispatch({
           type: UPDATE_POST_ERROR,
-          post
+          post,
+          id: post._id,
         });
       });
   };

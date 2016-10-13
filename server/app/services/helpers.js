@@ -1,5 +1,7 @@
 import config from '../../config';
 import console from 'better-console';
+import url from 'url';
+import _filenamify from 'filenamify';
 
 const skipAPIAuth = true;
 
@@ -52,22 +54,41 @@ export function checkPublicGetRoutes(req, res, next) {
   return null;
 }
 
-export function handleMongoError(error, res) {
+export function sendError(status, message, res) {
+  res.status(status);
+  res.json({
+    status,
+    message,
+  });
+  res.end();
+}
+
+export function sendJSON(content = {}, res) {
+  res.status(200);
+  res.json(Object.assign({
+    status: 200,
+  }, content));
+  res.end();
+}
+
+export function sendMongoError(error, res, itemSettings = {
+  name: 'Item',
+}) {
   if (error.name === 'ValidationError') {
-    res.status(400);
-    res.json({
-      status: 400,
-      message: 'Validation Error.',
-      errors: error.errors,
-    });
-    res.end();
+    const errors = Object.values(error.errors)
+      .map((validationError, index) =>
+        `${index + 1}. ${validationError.message}`
+      );
+
+    sendError(400, errors.join('<br>'), res);
+    return;
   } else if (error.code === 11000) { // 11000 => Unique slug already exists
-    res.status(400);
-    res.json({
-      status: 400,
-      message: 'Post with that slug already exists.',
-    });
-    res.end();
+    console.error(
+      'Proper Error handling for duplicated unique keys is not implemented in here:',
+      JSON.stringify(error, null, 2)
+    );
+
+    sendError(400, `That ${itemSettings.name} already exists.`, res);
   } else {
     res.status(500);
     res.json({
@@ -78,4 +99,13 @@ export function handleMongoError(error, res) {
 
     console.error(error);
   }
+}
+
+export function filenamify(filename) {
+  return _filenamify(filename)
+    .replace(new RegExp(' ', 'g'), '-');
+}
+
+export function buildUrl(path) {
+  return url.resolve(config.server.rootUrl, path);
 }

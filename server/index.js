@@ -1,6 +1,7 @@
 
 
 // require('es6-promise').polyfill();
+require('babel-polyfill');
 require('colors');
 
 import express from 'express';
@@ -21,7 +22,7 @@ import routes from './app/routes';
 
 import { viewDataMiddleware } from './app/services/view-data.js';
 
-console.info('\nWelcome to Polar-CMS!\n');
+console.info('Welcome to Polar-CMS!');
 
 mongoose.connect(config.db.url);
 mongoose.Promise = global.Promise;
@@ -38,8 +39,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'hbs');
 app.set('views', [config.server.internalViews, config.theme.themeViewFolder]);
 
-app.use(cors());
-app.use(session({ secret: 'ilovetits' }));
+// app.use(cors());
+app.options('*', cors());
+app.use(session({
+  secret: 'ilovetits',
+  name: 'Polar-CMS Session',
+  resave: true,
+  saveUninitialized: true,
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());

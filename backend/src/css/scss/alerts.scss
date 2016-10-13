@@ -1,0 +1,25 @@
+.alert-container {
+  z-index: 0;
+  box-sizing: border-box;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  transition: all 200ms ease, margin-top 300ms ease;
+
+  .alert-message {
+    position: relative;
+    z-index: $zindex-alert;
+    box-sizing: border-box;
+    width: 300px;
+    float: right;
+    clear: both;
+    pointer-events: all;
+
+    @media (max-width: 390px) {
+      width: 100%;
+    }
+  }
+}
