@@ -1,6 +1,7 @@
 
 
 // require('es6-promise').polyfill();
+require('nodejs-dashboard');
 require('babel-polyfill');
 require('colors');
 
