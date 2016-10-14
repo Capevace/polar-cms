@@ -1,5 +1,7 @@
 import url from 'url';
 import loglevel from 'loglevel';
+import { browserHistory } from 'react-router';
+
 // import loglevelMessagePrefix from 'loglevel-message-prefix';
 import config from './config';
 
@@ -23,6 +25,10 @@ export function buildApiUrl(path) {
   return buildUrl(config.apiUrl, path);
 }
 
+export function buildDashboardUrl(path) {
+  return buildUrl('dashboard/', path);
+}
+
 export function log(...message) {
   loglevel.debug(...message);
 }
@@ -41,6 +47,10 @@ export function logError(...message) {
 
 export function logTrace(...message) {
   loglevel.trace(...message);
+}
+
+export function navigateTo(route) {
+  browserHistory.push(buildDashboardUrl(route));
 }
 
 export function parseError(error) {
