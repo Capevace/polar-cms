@@ -26,7 +26,7 @@ export function buildApiUrl(path) {
 }
 
 export function buildDashboardUrl(path) {
-  return buildUrl('dashboard/', path);
+  return buildUrl('/dashboard/', path);
 }
 
 export function log(...message) {
