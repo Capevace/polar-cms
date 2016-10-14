@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { buildApiUrl, parseError, logError } from '../helpers';
+import { buildApiUrl, parseError, logError, navigateTo } from '../helpers';
 import { invalidatePosts } from './postList';
 import { dispatchNewAlert } from './alertList';
 
@@ -80,7 +80,7 @@ export function createPost(postTypeSlug, post) {
       .post(buildApiUrl(`posts/${postTypeSlug}`), {
         post,
       })
-      .then(() => {
+      .then((response) => {
         dispatch({
           type: CREATE_POST_SUCCESS,
         });
@@ -91,6 +91,8 @@ export function createPost(postTypeSlug, post) {
           alertType: 'success',
           message: `The ${getState().postTypes[postTypeSlug].name} was successfully created.`,
         });
+
+        navigateTo(`posts/${postTypeSlug}/edit/${response.data.id}`);
       })
       .catch((error) => {
         dispatchNewAlert(parseError(error.response));
