@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Helmet from 'react-helmet';
 import flatMap from 'flatmap';
-import { browserHistory } from 'react-router';
+import history from '../../history';
 
 import { Row, Col } from '../general/Grid';
 import Card from '../general/Card';
@@ -75,12 +75,31 @@ class PostEditor extends React.Component {
     this.submitAction = this.submitAction.bind(this);
   }
 
+  componentWillMount() {
+    // Listen to location changes, so we can confirm navigation when changes have been made
+    if (!this.confirmChangeListener) {
+      this.confirmChangeListener = history.listenBefore(() => {
+        if (this.state.unsaved) {
+          return 'Are you sure you want to leave this page?';
+        }
+
+        return null;
+      });
+    }
+  }
+
   componentWillReceiveProps(newProps) {
     if (newProps.post !== this.state.post) {
       this.setState({
         post: newProps.post,
         unsaved: false,
       });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.confirmChangeListener) {
+      this.confirmChangeListener();
     }
   }
 

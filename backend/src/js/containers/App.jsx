@@ -13,13 +13,6 @@ import AlertContainer from './AlertContainer';
 class App extends React.Component {
   componentWillMount() {
     this.props.fetchPostTypesIfNeeded(this.props.postTypes);
-
-    browserHistory.listenBefore((location) => {
-      console.info('gonna protect');
-      if (this.props.shouldProtectChanges) {
-        return 'Are you sure you want to leave this page?';
-      }
-    });
   }
 
   render() {
@@ -47,7 +40,7 @@ App.propTypes = {
 const mapStateToProps = state => ({
   postTypes: state.postTypes,
   pageTitle: state.page.pageTitle,
-  shouldProtectChanges: state.changeLossProtector.shouldProtect > 0,
+  // shouldProtectChanges: state.changeLossProtector.shouldProtect > 0,
 });
 
 const mapDispatchToProps = dispatch => ({

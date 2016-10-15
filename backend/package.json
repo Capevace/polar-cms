@@ -64,6 +64,7 @@
   "dependencies": {
     "axios": "^0.14.0",
     "flatmap": "0.0.3",
+    "history": "^2.1.2",
     "jquery": "^3.1.1",
     "loglevel": "^1.4.1",
     "loglevel-message-prefix": "^2.0.1",
@@ -74,6 +75,7 @@
     "react-helmet": "^3.1.0",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
+    "react-router-redux": "^4.0.6",
     "react-side-effect": "^1.0.2",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0"
@@ -115,5 +117,7 @@
     ],
     "testEnvironment": "node",
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(js|jsx)$"
-  }
+  },
+  "main": "index.js",
+  "license": "MIT"
 }

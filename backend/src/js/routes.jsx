@@ -1,10 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
+import { Router, Route, IndexRoute } from 'react-router';
+
 
 import withProps from './components/higher-order/withProps';
 import store from './reducers/store';
+import history from './history';
 
 import App from './containers/App';
 
@@ -14,8 +15,6 @@ import MediaListPage from './containers/media/MediaListPage';
 // Posts
 import PostListPage from './containers/posts/PostListPage';
 import PostEditPage from './containers/posts/PostEditPage';
-
-const history = syncHistoryWithStore(browserHistory, store);
 
 export default (
   <Provider store={store}>
