@@ -56,6 +56,7 @@ class PostEditPage extends React.Component {
               postType={this.props.postType}
               mode={this.props.mode}
               onSubmit={editedPost => this.handleSubmit(editedPost)}
+              route={{ path: this.props.routing.locationBeforeTransitions.pathname }}
             />
           </div>
         </PageLoader>
@@ -85,6 +86,7 @@ const mapStateToProps = (state, props) => ({
   postType: state.postTypes[props.params.postType],
   loading: state.postEditor.loading > 0,
   post: state.postEditor.post,
+  routing: state.routing,
 });
 
 const mapDispatchToProps = dispatch => ({

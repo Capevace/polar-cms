@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
+import Helmet from 'react-helmet';
 import flatMap from 'flatmap';
+import { browserHistory } from 'react-router';
 
 import { Row, Col } from '../general/Grid';
 import Card from '../general/Card';
@@ -67,6 +69,7 @@ class PostEditor extends React.Component {
 
     this.state = {
       post: props.post,
+      unsaved: false,
     };
 
     this.submitAction = this.submitAction.bind(this);
@@ -76,6 +79,7 @@ class PostEditor extends React.Component {
     if (newProps.post !== this.state.post) {
       this.setState({
         post: newProps.post,
+        unsaved: false,
       });
     }
   }
@@ -107,6 +111,7 @@ class PostEditor extends React.Component {
     return (val) => {
       this.setState({
         post: pathToObject(this.state.post, path, val),
+        unsaved: true,
       });
     };
   }
@@ -125,6 +130,7 @@ class PostEditor extends React.Component {
         {
           this.state.post &&
             <form onSubmit={this.submitAction}>
+              <Helmet title={`Editing${this.state.unsaved ? '*' : ''}`} />
               <Row>
                 <Col width="sm-8">
                   <Card>
@@ -200,6 +206,8 @@ PostEditor.propTypes = {
   }),
 
   onSubmit: PropTypes.func,
+  preventChanges: PropTypes.func,
+  unpreventChanges: PropTypes.func,
 };
 
 export default PostEditor;

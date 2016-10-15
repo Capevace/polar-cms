@@ -1,5 +1,7 @@
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunk from 'redux-thunk';
+import { routerReducer } from 'react-router-redux';
+
 
 import preloading from './preloading';
 import page from './page';
@@ -22,6 +24,7 @@ export default createStore(
     postList,
     postEditor,
     mediaList,
+    routing: routerReducer,
   }),
   compose(
     applyMiddleware(thunk),
