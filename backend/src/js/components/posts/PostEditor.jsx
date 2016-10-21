@@ -168,7 +168,7 @@ class PostEditor extends React.Component {
                       placeholder={`Enter the ${postTypeName} content.`}
                       type="textarea"
                       help={`The name of this ${postTypeName}.`}
-                      value={this.state.post.content[2]}
+                      value={this.state.post.content[0]}
                       onChange={this.mapChange('content[0]')}
                     />
                   </Card>
