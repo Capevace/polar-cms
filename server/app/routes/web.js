@@ -52,4 +52,13 @@ export default (app, passport) => {
     req.logout();
     res.redirect('/');
   });
+
+  app.get('/:slug', (req, res) => {
+    console.log(Post.findOne({ slug: req.params.slug }).exec().then((err, err2) => console.log(err, err2)));
+    res.send('hi!');
+  });
+
+  app.get('/:postType/:slug', () => {
+
+  });
 };

@@ -25,7 +25,12 @@ import { viewDataMiddleware } from './app/services/view-data.js';
 
 console.info('Welcome to Polar-CMS!');
 
-mongoose.connect(config.db.url);
+mongoose.connect(config.db.url, (err) => {
+  if (err) {
+    console.error(`Error connecting to Mongo Database at ${config.db.url}`);
+    throw err;
+  }
+});
 mongoose.Promise = global.Promise;
 
 config.passport(passport);
