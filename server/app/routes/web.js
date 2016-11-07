@@ -1,5 +1,6 @@
 import { combineViewData } from '../services/view-data.js';
 import { loginRequired } from '../services/helpers';
+import { renderComponent } from '../services/components';
 import User from '../models/user';
 import Post from '../models/post';
 
@@ -54,8 +55,29 @@ export default (app, passport) => {
   });
 
   app.get('/:slug', (req, res) => {
-    console.log(Post.findOne({ slug: req.params.slug }).exec().then((err, err2) => console.log(err, err2)));
-    res.send('hi!');
+    Post
+      .findOne({
+        slug: req.params.slug,
+      })
+      .exec()
+      .then((post) => {
+        res.render(`post-${post.postType}`, {
+          content: renderComponent({
+            name: 'list',
+            items: [
+              'I guess its okay?',
+              'Probably not...',
+            ],
+          }),
+        });
+      })
+      .catch((err) => {
+        res.status(500);
+        res.json({
+          error: err,
+        });
+        res.end();
+      });
   });
 
   app.get('/:postType/:slug', () => {

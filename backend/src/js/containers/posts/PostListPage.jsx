@@ -53,9 +53,9 @@ class PostListPage extends React.Component {
 
                             <NavLink
                               path={`posts/${this.props.postType.slug}/${post._id}`}
-                              className="btn btn-danger"
+                              className="btn btn-outline-danger"
                             >
-                              Delete
+                              Deletes
                             </NavLink>
                           </div>
                         </TableCol>

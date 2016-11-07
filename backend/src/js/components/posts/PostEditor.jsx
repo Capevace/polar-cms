@@ -216,6 +216,19 @@ class PostEditor extends React.Component {
   }
 }
 
+// class FormComponentsField extends React.Component {
+//
+//   render() {
+//     return (
+//
+//     );
+//   }
+// }
+//
+// function ComponentEditor() {
+//
+// }
+
 PostEditor.propTypes = {
   mode: PropTypes.string.isRequired,
   post: PropTypes.object,
@@ -225,8 +238,8 @@ PostEditor.propTypes = {
   }),
 
   onSubmit: PropTypes.func,
-  preventChanges: PropTypes.func,
-  unpreventChanges: PropTypes.func,
+  // preventChanges: PropTypes.func,
+  // unpreventChanges: PropTypes.func,
 };
 
 export default PostEditor;
